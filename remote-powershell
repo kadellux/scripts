@@ -1,0 +1,23 @@
+#Enabling Powershell Remoting/ must to stay in private-configuration
+Ps>Enable-PSRemoting -Force (local)
+
+#Configure TrustedHost (both computers)
+PS>set-item WSMan:\localhost\Client\TrustedHosts -Value 'MachineA,MachineB'
+or(wildcard)
+PS>set-item WSMan:\localhost\Client\TrustedHosts -Value '*'
+or(concatenate,append)
+PS>set-item WSMan:\localhost\Client\TrustedHosts -Value 'machineC' -concatenate
+
+###Restart Winrm service(local)
+Restart-Service winrm
+
+###test the connection(remote)
+test-wsman <remotecomputername>
+
+###Create PS session and Execute commands
+>$cred=Get-credential
+>$sess=New-PSSession -credential $cred -ComputerName <remotemachinename>
+>enter-PSSession $sess
+	<run commands in remote session>
+>exit-pssession
+>remove-PSSession $sess
